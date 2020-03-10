@@ -3,18 +3,20 @@ import "./game.css"
 
 class Game extends React.Component {
   state = {
-    vertSpeed: 0,
-    horizonSpeed: 0
+    vertSpeed: 1.2*this.props.difficulty,
+    horizonSpeed: 0.6*this.props.difficulty
   };
 
-  gameCode() {
-    let canvas = document.getElementById("myCanvas");
-    let ctx = canvas.getContext("2d");
+  gameCode = () => {
+    const canvas = document.getElementById("myCanvas");
+    const ctx = canvas.getContext("2d");
     let ballRadius = 10;
     let x = canvas.width / 2;
     let y = canvas.height - 30;
-    let dx = 0;
-    let dy = 0;
+    let ballHorizonSpeed = 0;
+    let ballVertSpeed = 0;
+    let chosenHorizonSpeed = this.state.horizonSpeed;
+    let chosenVertSpeed = this.state.vertSpeed;
     let paddleHeight = 10;
     let paddleWidth = 75;
     let paddleX = (canvas.width - paddleWidth) / 2;
@@ -63,7 +65,7 @@ class Game extends React.Component {
           let b = bricks[c][r];
           if (b.status == 1) {
             if (x > b.x && x < b.x + brickWidth && y > b.y && y < b.y + brickHeight) {
-              dy = -dy;
+              ballVertSpeed = -ballVertSpeed;
               b.status = 0;
               score++;
               if (score == brickRowCount * brickColumnCount) {
@@ -93,11 +95,11 @@ class Game extends React.Component {
     }
 
     function drawBricks() {
-      for (var c = 0; c < brickColumnCount; c++) {
-        for (var r = 0; r < brickRowCount; r++) {
+      for (let c = 0; c < brickColumnCount; c++) {
+        for (let r = 0; r < brickRowCount; r++) {
           if (bricks[c][r].status == 1) {
-            var brickX = (r * (brickWidth + brickPadding)) + brickOffsetLeft;
-            var brickY = (c * (brickHeight + brickPadding)) + brickOffsetTop;
+            let brickX = (r * (brickWidth + brickPadding)) + brickOffsetLeft;
+            let brickY = (c * (brickHeight + brickPadding)) + brickOffsetTop;
             bricks[c][r].x = brickX;
             bricks[c][r].y = brickY;
             ctx.beginPath();
@@ -131,14 +133,14 @@ class Game extends React.Component {
       drawLives();
       collisionDetection();
 
-      if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-        dx = -dx;
+      if (x + ballHorizonSpeed > canvas.width - ballRadius || x + ballHorizonSpeed < ballRadius) {
+        ballHorizonSpeed = -ballHorizonSpeed;
       }
-      if (y + dy < ballRadius) {
-        dy = -dy;
-      } else if (y + dy > canvas.height - ballRadius) {
+      if (y + ballVertSpeed < ballRadius) {
+        ballVertSpeed = -ballVertSpeed;
+      } else if (y + ballVertSpeed > canvas.height - ballRadius) {
         if (x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
+          ballVertSpeed = -ballVertSpeed;
         } else {
           lives--;
           if (!lives) {
@@ -147,8 +149,8 @@ class Game extends React.Component {
           } else {
             x = canvas.width / 2;
             y = canvas.height - 30;
-            dx = 3;
-            dy = -3;
+            ballHorizonSpeed = chosenHorizonSpeed;
+            ballVertSpeed = chosenVertSpeed;
             paddleX = (canvas.width - paddleWidth) / 2;
           }
         }
@@ -160,18 +162,18 @@ class Game extends React.Component {
         paddleX -= 7;
       }
 
-      x += dx;
-      y += dy;
+      x += ballHorizonSpeed;
+      y += ballVertSpeed;
       requestAnimationFrame(draw);
     }
 
     setTimeout( () => {
-      dx = this.state.horizonSpeed;
-      dy = this.state.vertSpeed;
+      ballHorizonSpeed = chosenHorizonSpeed;
+      ballVertSpeed = chosenVertSpeed;
     }, 2000);
 
     draw();
-  }
+  };
 
   componentDidMount() {
     this.gameCode();

@@ -7,7 +7,28 @@ import Game from './components/game/game'
 
 class App extends React.Component {
   state = {
-    showGame: false
+    showGame: false,
+    difficulty: 3
+  };
+
+  addDifficulty = () => {
+    this.setState(prevState => {
+      if (this.state.difficulty < 5) {
+        return {
+          difficulty: prevState.difficulty + 1
+        }
+      }
+    })
+  };
+
+  removeDifficulty = () => {
+    this.setState(prevState => {
+      if (this.state.difficulty > 1) {
+        return {
+          difficulty: prevState.difficulty - 1
+        }
+      }
+    })
   };
 
   startGame = () => {
@@ -23,15 +44,15 @@ class App extends React.Component {
       return (
          <div>
            <Header showGame={this.startGame} hideGame={this.endGame}/>
-           <Main/>
-           <Game/>
+           <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty}/>
+           <Game difficulty={this.state.difficulty}/>
          </div>
       )
     } else {
       return (
          <div>
            <Header showGame={this.startGame} hideGame={this.endGame}/>
-           <Main/>
+           <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty}/>
          </div>)
     }
   }
