@@ -29,8 +29,7 @@ class GameMenu extends React.Component {
     main.style.display = "flex";
     this.setState({
          showStartButton: true
-       }
-    )
+       });
     this.props.endGame();
   };
 
@@ -40,8 +39,7 @@ class GameMenu extends React.Component {
     } else {
       return (
          <div className={'game-buttons'} id={'game-buttons'}>
-           <button className={'game-button'}>Push ball</button>
-           <button className={'game-button'}>Reset</button>
+           <button className={'game-button'} onClick={this.props.pauseSwitch}>{this.props.gamePaused? 'Go' : 'Pause'}</button>
            <button onClick={this.hideCanvas} className={'game-button'}>Stop</button>
          </div>
       )

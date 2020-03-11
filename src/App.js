@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import Header from './components/header/Header'
 import Main from './components/main/Main'
 import Game from './components/game/game'
@@ -8,7 +7,15 @@ import Game from './components/game/game'
 class App extends React.Component {
   state = {
     showGame: false,
+    gamePaused: false,
     difficulty: 3
+  };
+
+  gamePauseSwitch = () => {
+    this.setState(prevState => {
+      return {
+      gamePaused: !prevState.gamePaused}
+    })
   };
 
   addDifficulty = () => {
@@ -36,22 +43,22 @@ class App extends React.Component {
   };
 
   endGame = () => {
-    this.setState({showGame: false})
+    this.setState({showGame: false});
   };
 
   render() {
     if (this.state.showGame) {
       return (
          <div>
-           <Header showGame={this.startGame} hideGame={this.endGame}/>
+           <Header showGame={this.startGame} hideGame={this.endGame} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch}/>
            <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty}/>
-           <Game difficulty={this.state.difficulty}/>
+           <Game difficulty={this.state.difficulty} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch}/>
          </div>
       )
     } else {
       return (
          <div>
-           <Header showGame={this.startGame} hideGame={this.endGame}/>
+           <Header showGame={this.startGame} hideGame={this.endGame} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch}/>
            <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty}/>
          </div>)
     }

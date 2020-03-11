@@ -9,8 +9,8 @@ class Main extends React.Component {
        <main className={'main'} id={'main'}>
          <Settings addDifficulty={this.props.addDifficulty} removeDifficulty={this.props.removeDifficulty}
                    difficulty={this.props.difficulty}/>
-         <DescriptionBlock/>
-         <DescriptionBlock/>
+         <DescriptionBlock class={'about-game'}/>
+         <DescriptionBlock class={'history'}/>
        </main>
     )
   }

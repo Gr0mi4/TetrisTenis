@@ -1,4 +1,4 @@
 {
-  "description": "This game is a copy of famous tetris game. The goal is to destroy all the bricks that with the ball, and make sure that in process ball wouldn't drop out from lower line of the screen",
+  "description": "This game is a copy of famous tetris game. The goal is to destroy all the bricks that with the ball, and make sure that in process ball wouldn't drop out from lower line of the screen. You can change speed of the ball by changing difficulty parameter on your left. More difficulty, more speed) ",
   "header": "About Game"
 }

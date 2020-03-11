@@ -11,6 +11,7 @@
     box-shadow: 0 0 2px 2px;
     transition: 0.5s;
     background-color: darkgray;
+    outline: none;
 }
 
 .game-button:hover {

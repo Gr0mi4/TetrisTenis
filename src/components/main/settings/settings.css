@@ -10,13 +10,50 @@
     margin: 0;
 }
 
-.difficulty-change button {
+.difficulty-change-button {
+    padding: 10px;
+    width: 55px;
+    text-align: center;
+    text-decoration: none;
+    color: #525252;
+    font-family: 'Bauhaus 93';
+    font-size: 20px;
+    border: 2px solid gray;
+    border-radius: 100%;
+    box-shadow: 0 0 2px 2px;
+    transition: 0.5s;
+    background-color: darkgray;
+    outline: none;
+}
 
+.difficulty-change-button:hover {
+    box-shadow: 0 0 5px 5px;
+    transform: scale(1.05);
+    cursor: pointer;
+}
+
+.difficulty-change-button:active {
+    transform: scale(0.95);
+}
+
+.difficulty-field {
+    display: block;
+    min-width: 250px;
+    border: 3px solid #525252;
+    border-radius: 25px;
+    margin: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .difficulty-indicator {
-    width: 20px;
+    width: 40px;
+    height: 40px;
     background: #282c34;
     margin:0 5px;
+    border-radius: 50%;
     padding: 0;
+    content: "";
+
 }

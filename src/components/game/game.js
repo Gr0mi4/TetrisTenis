@@ -10,6 +10,7 @@ class Game extends React.Component {
   gameCode = () => {
     const canvas = document.getElementById("myCanvas");
     const ctx = canvas.getContext("2d");
+
     let ballRadius = 10;
     let x = canvas.width / 2;
     let y = canvas.height - 30;
@@ -124,15 +125,7 @@ class Game extends React.Component {
       ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
     }
 
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      drawBricks();
-      drawBall();
-      drawPaddle();
-      drawScore();
-      drawLives();
-      collisionDetection();
-
+    function screenLimits() {
       if (x + ballHorizonSpeed > canvas.width - ballRadius || x + ballHorizonSpeed < ballRadius) {
         ballHorizonSpeed = -ballHorizonSpeed;
       }
@@ -161,18 +154,34 @@ class Game extends React.Component {
       } else if (leftPressed && paddleX > 0) {
         paddleX -= 7;
       }
+    }
+
+    let draw = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBricks();
+      drawBall();
+      drawPaddle();
+      drawScore();
+      drawLives();
+      collisionDetection();
+      screenLimits();
 
       x += ballHorizonSpeed;
       y += ballVertSpeed;
-      requestAnimationFrame(draw);
-    }
+    };
 
     setTimeout( () => {
       ballHorizonSpeed = chosenHorizonSpeed;
       ballVertSpeed = chosenVertSpeed;
-    }, 2000);
+    }, 3000);
 
-    draw();
+    return(
+       setInterval( () => {
+         if (!this.props.gamePaused) {
+           draw();
+         }
+       }, 16.6)
+    )
   };
 
   componentDidMount() {
