@@ -17,8 +17,8 @@ class Game extends React.Component {
 
     let paddleHeight = 10;
     let paddleWidth = 75;
-    let paddleSpeed = 1;
-    let paddleX = (canvas.width - paddleWidth) / 2;
+    let paddleSpeed = 7;
+    let paddleXLeftCord = (canvas.width - paddleWidth)/2;
 
     let ballXCord = canvas.width / 2;
     let ballYCord = canvas.height - 30;
@@ -31,6 +31,9 @@ class Game extends React.Component {
     let brickColumnCount = 3;
     let brickOffsetLeft = ((canvas.width - ((brickWidth+brickPadding)*brickRowCount))/2)+5;
 
+    let seconds = '00';
+    let minutes = '00';
+    let timeText;
 
     let chosenHorizonSpeed = this.state.horizonSpeed;
     let chosenVertSpeed = this.state.vertSpeed;
@@ -79,7 +82,7 @@ class Game extends React.Component {
               brick.status = 0;
               score++;
               if (score === brickRowCount * brickColumnCount) {
-                alert("YOU WIN, CONGRATS!");
+                alert("Congratulations you won! Your score is " + score + "0 in time of " + timeText);
                 document.location.reload();
               }
             }
@@ -98,7 +101,7 @@ class Game extends React.Component {
 
     function drawPaddle() {
       ctx.beginPath();
-      ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+      ctx.rect(paddleXLeftCord, canvas.height - paddleHeight, paddleWidth, paddleHeight);
       ctx.fillStyle = "#525252";
       ctx.fill();
       ctx.closePath();
@@ -134,10 +137,47 @@ class Game extends React.Component {
       ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
     }
 
+    function drawTime() {
+      ctx.font = "20px Arial";
+      ctx.fillStyle = "#525252";
+      ctx.fillText("Time: " + timeText, canvas.width / 2 - 45, 20);
+      timeText = minutes + ' : ' + seconds;
+    }
+
+    function timeTextCorrectView() {
+      if (seconds === 60) {
+        minutes = Number(minutes);
+        minutes += 1;
+        if (minutes < 10) {
+          minutes = '0' + minutes
+        }
+        seconds = 0;
+      }
+      if (typeof seconds == 'number' && seconds < 10) {
+        seconds = '0' + seconds
+      }
+    }
+
     function paddleCollision() {
+      let ballXRightCord = ballXCord+ballRadius;
+      let ballXLeftCord = ballXCord-ballRadius;
+      let paddleXRightCord = paddleXLeftCord + paddleWidth ;
+      
       if (ballYCord + ballVertSpeed > canvas.height - ballRadius - paddleHeight/2) {
-        if (ballXCord+ballRadius > paddleX && ballXCord-ballRadius < paddleX + paddleWidth) {
-          ballVertSpeed = -ballVertSpeed;
+        if (ballXRightCord > paddleXLeftCord && ballXLeftCord < paddleXRightCord) {
+          switch (true) {
+            case (ballXCord > paddleXLeftCord && ballXCord < paddleXLeftCord + paddleWidth/3) :
+              ballHorizonSpeed -= 2;
+              ballVertSpeed = -ballVertSpeed;
+              break;
+            case (ballXCord >  paddleXLeftCord + (paddleWidth/3)*2 && ballXCord < paddleXRightCord) :
+              ballHorizonSpeed += 2;
+              ballVertSpeed = -ballVertSpeed;
+              break;
+            default:
+              ballVertSpeed = -ballVertSpeed;
+
+          }
         } else {
           lives--;
           if (!lives) {
@@ -145,10 +185,10 @@ class Game extends React.Component {
             document.location.reload();
           } else {
             ballXCord = canvas.width / 2;
-            ballYCord = canvas.height - 30;
+            ballYCord = canvas.height - 60;
             ballHorizonSpeed = chosenHorizonSpeed;
             ballVertSpeed = chosenVertSpeed;
-            paddleX = (canvas.width - paddleWidth) / 2;
+            paddleXLeftCord = (canvas.width - paddleWidth) / 2;
           }
         }
       }
@@ -161,12 +201,22 @@ class Game extends React.Component {
       if (ballYCord + ballVertSpeed < ballRadius) {
         ballVertSpeed = -ballVertSpeed;
       }
-      if (rightPressed && paddleX < canvas.width - paddleWidth) {
-        paddleX += paddleSpeed;
-      } else if (leftPressed && paddleX > 0) {
-        paddleX -= paddleSpeed;
+      if (rightPressed && paddleXLeftCord < canvas.width - paddleWidth) {
+        paddleXLeftCord += paddleSpeed;
+      } else if (leftPressed && paddleXLeftCord > 0) {
+        paddleXLeftCord -= paddleSpeed;
       }
     }
+
+
+
+    const chronograph = () => {
+      setInterval( () => {
+        if (!this.props.gamePaused)
+        seconds++;
+        timeTextCorrectView();
+      }, 1000);
+    };
 
     let draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -178,6 +228,7 @@ class Game extends React.Component {
       collisionDetection();
       paddleCollision();
       screenLimits();
+      drawTime();
 
       ballXCord += ballHorizonSpeed;
       ballYCord += ballVertSpeed;
@@ -186,6 +237,7 @@ class Game extends React.Component {
     setTimeout( () => {
       ballHorizonSpeed = chosenHorizonSpeed;
       ballVertSpeed = chosenVertSpeed;
+      chronograph();
     }, 3000);
 
     return(

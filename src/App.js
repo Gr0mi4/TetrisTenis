@@ -1,4 +1,5 @@
 import React from 'react';
+import {Route} from 'react-router-dom'
 import Header from './components/header/Header'
 import Main from './components/main/Main'
 import Game from './components/game/game'
