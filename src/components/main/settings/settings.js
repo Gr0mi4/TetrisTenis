@@ -9,6 +9,10 @@ class Settings extends React.Component {
     let items = array.map((item, index) => <div className={'difficulty-indicator'} key={index}></div>);
     return (
        <div className={'settings main-block'}>
+         <h1>Please enter your name</h1>
+         <div>
+           <input className={'name-input'} width={40}/>
+         </div>
          <h1>Difficulty</h1>
          <div className={'difficulty-change'}>
            <button className={'difficulty-change-button'} onClick={this.props.removeDifficulty}>-</button>

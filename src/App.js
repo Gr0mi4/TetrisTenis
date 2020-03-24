@@ -3,6 +3,7 @@ import {Route} from 'react-router-dom'
 import Header from './components/header/Header'
 import Main from './components/main/Main'
 import Game from './components/game/game'
+import {database} from "./firebase";
 
 
 class App extends React.Component {
@@ -11,6 +12,19 @@ class App extends React.Component {
     gamePaused: false,
     difficulty: 3
   };
+
+  componentDidMount() {
+     /*function writeUserData(userId, name, email, imageUrl) {
+      database().ref('users/' + userId).set({
+        username: name,
+        email: email,
+        profile_picture : imageUrl
+        writeUserData(13, 'ivan', 'blabal', 'aesafads');
+      });*/
+     console.log(database.ref().on('value', (snapshot) => {
+       console.log(snapshot.val());
+     }));
+    }
 
   gamePauseSwitch = () => {
     this.setState(prevState => {
