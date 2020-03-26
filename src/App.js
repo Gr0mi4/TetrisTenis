@@ -1,30 +1,24 @@
 import React from 'react';
-import {Route} from 'react-router-dom'
 import Header from './components/header/Header'
 import Main from './components/main/Main'
 import Game from './components/game/game'
-import {database} from "./firebase";
+
 
 
 class App extends React.Component {
   state = {
     showGame: false,
     gamePaused: false,
+    userName: 'Mister X',
     difficulty: 3
   };
 
-  componentDidMount() {
-     /*function writeUserData(userId, name, email, imageUrl) {
-      database().ref('users/' + userId).set({
-        username: name,
-        email: email,
-        profile_picture : imageUrl
-        writeUserData(13, 'ivan', 'blabal', 'aesafads');
-      });*/
-     console.log(database.ref().on('value', (snapshot) => {
-       console.log(snapshot.val());
-     }));
-    }
+  changeUserName = (name) => {
+    this.setState({
+         userName:`${name}`
+       }
+    );
+  };
 
   gamePauseSwitch = () => {
     this.setState(prevState => {
@@ -66,15 +60,15 @@ class App extends React.Component {
       return (
          <div>
            <Header showGame={this.startGame} hideGame={this.endGame} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch}/>
-           <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty}/>
-           <Game difficulty={this.state.difficulty} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch}/>
+           <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty} changeName={event => this.changeUserName(event.target.value)} userName={this.state.userName}/>
+           <Game difficulty={this.state.difficulty} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch} userName={this.state.userName}/>
          </div>
       )
     } else {
       return (
          <div>
            <Header showGame={this.startGame} hideGame={this.endGame} gamePaused={this.state.gamePaused} pauseSwitch={this.gamePauseSwitch}/>
-           <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty}/>
+           <Main addDifficulty={this.addDifficulty} removeDifficulty={this.removeDifficulty} difficulty={this.state.difficulty} changeUserName={this.changeUserName} userName={this.state.userName}/>
          </div>)
     }
   }

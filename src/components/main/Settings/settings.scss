@@ -1,0 +1,112 @@
+.name {
+
+  &-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &-input {
+    font-size: 32px;
+    color: #000;
+    text-align: center;
+    font-family: "Calibri";
+    background-color: white;
+    border-radius: 10px;
+    border: 2px solid gray;
+    box-shadow: 0 0 3px 1px #393c3a;
+    outline: none;
+    transition: all .3s;
+    max-width: 350px;
+
+    &:focus {
+      box-shadow: 0 0 10px 3px #393c3a;
+    }
+  }
+
+  &-submit-button {
+    margin: 20px;
+    padding: 10px 15px;
+    text-align: center;
+    text-decoration: none;
+    color: #525252;
+    font-family: 'Bauhaus 93';
+    font-size: 25px;
+    border: 2px solid gray;
+    border-radius: 15px;
+    box-shadow: 0 0 2px 2px;
+    transition: 0.5s;
+    background-color: darkgray;
+    outline: none;
+
+    &:hover {
+      box-shadow: 0 0 5px 5px;
+      transform: scale(1.05);
+      cursor: pointer;
+    }
+
+    &:active {
+      transform: scale(0.95);
+    }
+  }
+}
+
+.difficulty {
+  margin: 10px 50px;
+
+  &-change {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0;
+    margin: 0;
+
+
+    &-button {
+      padding: 10px;
+      width: 55px;
+      text-align: center;
+      text-decoration: none;
+      color: #525252;
+      font-family: 'Bauhaus 93';
+      font-size: 20px;
+      border: 2px solid gray;
+      border-radius: 100%;
+      box-shadow: 0 0 2px 2px;
+      transition: 0.5s;
+      background-color: darkgray;
+      outline: none;
+
+      &:hover {
+        box-shadow: 0 0 5px 5px;
+        transform: scale(1.05);
+        cursor: pointer;
+      }
+
+      &:active {
+        transform: scale(0.95);
+      }
+    }
+  }
+
+  &-field {
+    display: block;
+    min-width: 250px;
+    border: 3px solid #525252;
+    border-radius: 25px;
+    margin: 0 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-indicator {
+    width: 40px;
+    height: 40px;
+    background: #282c34;
+    margin: 0 5px;
+    border-radius: 50%;
+    padding: 0;
+    content: "";
+  }
+}

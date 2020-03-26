@@ -1,0 +1,13 @@
+.main {
+  display: flex;
+  font-size: 14px;
+  margin: 10px;
+  flex-direction: row;
+  list-style-type: none;
+
+  &-block {
+    flex: 1;
+    text-align: center;
+    margin: 30px;
+  }
+}

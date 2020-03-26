@@ -1,11 +1,17 @@
 import React from "react";
 import "./game.css"
+import {database} from "./../../firebase";
 
 class Game extends React.Component {
   state = {
-    vertSpeed: 1.2*this.props.difficulty,
-    horizonSpeed: 0.0*this.props.difficulty
+    vertSpeed: 1.2 * this.props.difficulty,
+    horizonSpeed: 0.3 * this.props.difficulty,
+    bestResults: null
   };
+
+  saveResults = () => {
+    /*);*/
+  }
 
   gameCode = () => {
     const canvas = document.getElementById("myCanvas");
@@ -18,7 +24,7 @@ class Game extends React.Component {
     let paddleHeight = 10;
     let paddleWidth = 75;
     let paddleSpeed = 7;
-    let paddleXLeftCord = (canvas.width - paddleWidth)/2;
+    let paddleXLeftCord = (canvas.width - paddleWidth) / 2;
 
     let ballXCord = canvas.width / 2;
     let ballYCord = canvas.height - 30;
@@ -29,7 +35,7 @@ class Game extends React.Component {
     let brickOffsetTop = 30;
     let brickRowCount = 7;
     let brickColumnCount = 3;
-    let brickOffsetLeft = ((canvas.width - ((brickWidth+brickPadding)*brickRowCount))/2)+5;
+    let brickOffsetLeft = ((canvas.width - ((brickWidth + brickPadding) * brickRowCount)) / 2) + 5;
 
     let seconds = '00';
     let minutes = '00';
@@ -41,6 +47,8 @@ class Game extends React.Component {
     let rightPressed = false;
     let leftPressed = false;
 
+    let resultsArray;
+    let playerData;
 
     let score = 0;
     let lives = 3;
@@ -77,11 +85,12 @@ class Game extends React.Component {
         for (let r = 0; r < brickRowCount; r++) {
           let brick = bricks[c][r];
           if (brick.status === 1) {
-            if (ballXCord > brick.x && ballXCord < brick.x + brickWidth && ballYCord > brick.y && ballYCord+15 < brick.y + brickHeight*2) {
+            if (ballXCord > brick.x && ballXCord < brick.x + brickWidth && ballYCord > brick.y && ballYCord + 15 < brick.y + brickHeight * 2) {
               ballVertSpeed = -ballVertSpeed;
               brick.status = 0;
               score++;
               if (score === brickRowCount * brickColumnCount) {
+                calculateYourPlace();
                 alert("Congratulations you won! Your score is " + score + "0 in time of " + timeText);
                 document.location.reload();
               }
@@ -90,6 +99,31 @@ class Game extends React.Component {
         }
       }
     }
+
+
+    const setPlayerData = () => {
+      playerData = {
+        difficulty: `${this.props.difficulty}`,
+        name: `${this.props.userName}`,
+        time: timeText
+      };
+      return playerData;
+    };
+
+    const calculateYourPlace = () => {
+        setPlayerData();
+        resultsArray = this.state.bestResults;
+        resultsArray.push(playerData);
+        resultsArray.sort((a,b) => a.time > b.time ? 1 : -1);
+        resultsArray.length = 9;
+        writeUserData();
+        };
+
+    const writeUserData = () => {
+      database.ref(`/`).set({
+        BestResults: resultsArray
+      })
+    };
 
     function drawBall() {
       ctx.beginPath();
@@ -158,19 +192,19 @@ class Game extends React.Component {
       }
     }
 
-    function paddleCollision() {
-      let ballXRightCord = ballXCord+ballRadius;
-      let ballXLeftCord = ballXCord-ballRadius;
-      let paddleXRightCord = paddleXLeftCord + paddleWidth ;
-      
-      if (ballYCord + ballVertSpeed > canvas.height - ballRadius - paddleHeight/2) {
+    const paddleCollision = () => {
+      let ballXRightCord = ballXCord + ballRadius;
+      let ballXLeftCord = ballXCord - ballRadius;
+      let paddleXRightCord = paddleXLeftCord + paddleWidth;
+
+      if (ballYCord + ballVertSpeed > canvas.height - ballRadius - paddleHeight / 2) {
         if (ballXRightCord > paddleXLeftCord && ballXLeftCord < paddleXRightCord) {
           switch (true) {
-            case (ballXCord > paddleXLeftCord && ballXCord < paddleXLeftCord + paddleWidth/3) :
+            case (ballXCord > paddleXLeftCord && ballXCord < paddleXLeftCord + paddleWidth / 3) :
               ballHorizonSpeed -= 2;
               ballVertSpeed = -ballVertSpeed;
               break;
-            case (ballXCord >  paddleXLeftCord + (paddleWidth/3)*2 && ballXCord < paddleXRightCord) :
+            case (ballXCord > paddleXLeftCord + (paddleWidth / 3) * 2 && ballXCord < paddleXRightCord) :
               ballHorizonSpeed += 2;
               ballVertSpeed = -ballVertSpeed;
               break;
@@ -192,7 +226,7 @@ class Game extends React.Component {
           }
         }
       }
-    }
+    };
 
     function screenLimits() {
       if (ballXCord + ballHorizonSpeed > canvas.width - ballRadius || ballXCord + ballHorizonSpeed < ballRadius) {
@@ -209,11 +243,10 @@ class Game extends React.Component {
     }
 
 
-
     const chronograph = () => {
-      setInterval( () => {
+      setInterval(() => {
         if (!this.props.gamePaused)
-        seconds++;
+          seconds++;
         timeTextCorrectView();
       }, 1000);
     };
@@ -234,14 +267,14 @@ class Game extends React.Component {
       ballYCord += ballVertSpeed;
     };
 
-    setTimeout( () => {
+    setTimeout(() => {
       ballHorizonSpeed = chosenHorizonSpeed;
       ballVertSpeed = chosenVertSpeed;
       chronograph();
     }, 3000);
 
-    return(
-       setInterval( () => {
+    return (
+       setInterval(() => {
          if (!this.props.gamePaused) {
            draw();
          }
@@ -250,6 +283,11 @@ class Game extends React.Component {
   };
 
   componentDidMount() {
+    database.ref('/BestResults').on('value', (snapshot) => {
+      this.setState({
+        bestResults: snapshot.val()
+      })
+    });
     this.gameCode();
   }
 

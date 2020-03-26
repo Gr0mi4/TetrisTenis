@@ -1,0 +1,15 @@
+.leader-board {
+  margin: 50px;
+
+  &-table {
+    background-color: #fff;
+    font-size: 18px;
+    padding: 20px;
+    border: 2px solid gray;
+    border-radius: 30px;
+
+    & td {
+      padding: 20px 30px;
+    }
+  }
+}
