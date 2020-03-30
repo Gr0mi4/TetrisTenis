@@ -3,8 +3,6 @@ import Header from './components/header/Header'
 import Main from './components/main/Main'
 import Game from './components/game/game'
 
-
-
 class App extends React.Component {
   state = {
     showGame: false,
@@ -52,7 +50,10 @@ class App extends React.Component {
   };
 
   endGame = () => {
-    this.setState({showGame: false});
+    this.setState({gamePaused : true});
+    setTimeout(() => {
+      this.setState({showGame: false});
+    }, 1000)
   };
 
   render() {

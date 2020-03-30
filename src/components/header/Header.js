@@ -18,9 +18,9 @@ class Header extends React.Component {
          <GameMenu startGame={this.props.showGame} endGame={this.props.hideGame} gamePaused={this.props.gamePaused} pauseSwitch={this.props.pauseSwitch}/>
          <nav className={'navigation'} id={'nav'}>
            <ul>
-             <li>Change Parameters</li>
-             <li>About</li>
-             <li>History</li>
+             <li>Parameters</li>
+             <li>Leaders</li>
+             <li>Information</li>
            </ul>
          </nav>
        </header>

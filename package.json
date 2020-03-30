@@ -36,6 +36,7 @@
   },
   "devDependencies": {
     "firebase": "^7.12.0",
+    "redux": "^4.0.5",
     "scss": "^0.2.4"
   }
 }

@@ -9,10 +9,6 @@ class Game extends React.Component {
     bestResults: null
   };
 
-  saveResults = () => {
-    /*);*/
-  }
-
   gameCode = () => {
     const canvas = document.getElementById("myCanvas");
     const ctx = canvas.getContext("2d");
@@ -52,6 +48,8 @@ class Game extends React.Component {
 
     let score = 0;
     let lives = 3;
+
+    let gameWaitingNextLife = false;
 
     let bricks = [];
     for (let c = 0; c < brickColumnCount; c++) {
@@ -100,7 +98,6 @@ class Game extends React.Component {
       }
     }
 
-
     const setPlayerData = () => {
       playerData = {
         difficulty: `${this.props.difficulty}`,
@@ -111,13 +108,13 @@ class Game extends React.Component {
     };
 
     const calculateYourPlace = () => {
-        setPlayerData();
-        resultsArray = this.state.bestResults;
-        resultsArray.push(playerData);
-        resultsArray.sort((a,b) => a.time > b.time ? 1 : -1);
-        resultsArray.length = 9;
-        writeUserData();
-        };
+      setPlayerData();
+      resultsArray = this.state.bestResults;
+      resultsArray.push(playerData);
+      resultsArray.sort((a, b) => a.time > b.time ? 1 : -1);
+      resultsArray.length = 5;
+      writeUserData();
+    };
 
     const writeUserData = () => {
       database.ref(`/`).set({
@@ -171,6 +168,12 @@ class Game extends React.Component {
       ctx.fillText("Lives: " + lives, canvas.width - 65, 20);
     }
 
+    function drawLostLifeWarning() {
+      ctx.font = "24px Arial";
+      ctx.fillStyle = "#525252";
+      ctx.fillText("You lost your life, it is " + lives + " to go, be careful!", 100, canvas.height / 2);
+    }
+
     function drawTime() {
       ctx.font = "20px Arial";
       ctx.fillStyle = "#525252";
@@ -218,11 +221,17 @@ class Game extends React.Component {
             alert("GAME OVER");
             document.location.reload();
           } else {
+            gameWaitingNextLife = true;
+            ballHorizonSpeed = 0;
+            ballVertSpeed = 0;
             ballXCord = canvas.width / 2;
             ballYCord = canvas.height - 60;
-            ballHorizonSpeed = chosenHorizonSpeed;
-            ballVertSpeed = chosenVertSpeed;
-            paddleXLeftCord = (canvas.width - paddleWidth) / 2;
+            setTimeout(function () {
+              gameWaitingNextLife = false;
+              ballHorizonSpeed = chosenHorizonSpeed;
+              ballVertSpeed = chosenVertSpeed;
+              paddleXLeftCord = (canvas.width - paddleWidth) / 2;
+            }, 2000);
           }
         }
       }
@@ -253,6 +262,7 @@ class Game extends React.Component {
 
     let draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (gameWaitingNextLife) {drawLostLifeWarning()}
       drawBricks();
       drawBall();
       drawPaddle();
@@ -262,6 +272,7 @@ class Game extends React.Component {
       paddleCollision();
       screenLimits();
       drawTime();
+      console.log('draw выполняется');
 
       ballXCord += ballHorizonSpeed;
       ballYCord += ballVertSpeed;
@@ -273,13 +284,11 @@ class Game extends React.Component {
       chronograph();
     }, 3000);
 
-    return (
-       setInterval(() => {
-         if (!this.props.gamePaused) {
-           draw();
-         }
-       }, 16.6)
-    )
+    setInterval(() => {
+      if (!this.props.gamePaused) {
+        draw();
+      }
+    }, 16.6)
   };
 
   componentDidMount() {
